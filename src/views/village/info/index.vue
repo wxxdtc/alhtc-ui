@@ -1,9 +1,9 @@
 <template>
    <div class="app-container">
      <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-       <el-form-item label="信息标题" prop="informationTitle">
+       <el-form-item label="信息标题" prop="infoTitle">
          <el-input
-           v-model="queryParams.informationTitle"
+           v-model="queryParams.infoTitle"
            placeholder="请输入信息标题"
            clearable
            size="small"
@@ -19,10 +19,10 @@
            @keyup.enter.native="handleQuery"
          />
        </el-form-item>
-       <el-form-item label="类型" prop="informationType">
-         <el-select v-model="queryParams.informationType" placeholder="信息类型" clearable size="small">
+       <el-form-item label="类型" prop="infoType">
+         <el-select v-model="queryParams.infoType" placeholder="信息类型" clearable size="small">
            <el-option
-             v-for="dict in dict.type.village_information_type"
+             v-for="dict in dict.type.sys_notice_type"
              :key="dict.value"
              :label="dict.label"
              :value="dict.value"
@@ -43,7 +43,7 @@
            icon="el-icon-plus"
            size="mini"
            @click="handleAdd"
-           v-hasPermi="['village:information:add']"
+           v-hasPermi="['village:info:add']"
          >新增</el-button>
        </el-col>
        <el-col :span="1.5">
@@ -54,7 +54,7 @@
            size="mini"
            :disabled="single"
            @click="handleUpdate"
-           v-hasPermi="['village:information:edit']"
+           v-hasPermi="['village:info:edit']"
          >修改</el-button>
        </el-col>
        <el-col :span="1.5">
@@ -65,29 +65,29 @@
            size="mini"
            :disabled="multiple"
            @click="handleDelete"
-           v-hasPermi="['village:information:remove']"
+           v-hasPermi="['village:info:remove']"
          >删除</el-button>
        </el-col>
        <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
      </el-row>
 
-     <el-table v-loading="loading" :data="informationList" @selection-change="handleSelectionChange">
+     <el-table v-loading="loading" :data="infoList" @selection-change="handleSelectionChange">
        <el-table-column type="selection" width="55" align="center" />
-       <el-table-column label="序号" align="center" prop="informationId" width="100" />
+       <el-table-column label="序号" align="center" prop="infoId" width="100" />
        <el-table-column
          label="信息标题"
          align="center"
-         prop="informationTitle"
+         prop="infoTitle"
          :show-overflow-tooltip="true"
        />
-       <el-table-column label="信息类型" align="center" prop="informationType" width="100">
+       <el-table-column label="信息类型" align="center" prop="infoType" width="100">
          <template slot-scope="scope">
-           <dict-tag :options="dict.type.village_information_type" :value="scope.row.informationType"/>
+           <dict-tag :options="dict.type.sys_notice_type" :value="scope.row.infoType"/>
          </template>
        </el-table-column>
        <el-table-column label="状态" align="center" prop="status" width="100">
          <template slot-scope="scope">
-           <dict-tag :options="dict.type.village_information_status" :value="scope.row.status"/>
+           <dict-tag :options="dict.type.sys_notice_status" :value="scope.row.status"/>
          </template>
        </el-table-column>
        <el-table-column label="浏览数" align="center" prop="visitorVolume" width="100" />
@@ -104,14 +104,14 @@
              type="text"
              icon="el-icon-edit"
              @click="handleUpdate(scope.row)"
-             v-hasPermi="['village:information:edit']"
+             v-hasPermi="['village:info:edit']"
            >修改</el-button>
            <el-button
              size="mini"
              type="text"
              icon="el-icon-delete"
              @click="handleDelete(scope.row)"
-             v-hasPermi="['village:information:remove']"
+             v-hasPermi="['village:info:remove']"
            >删除</el-button>
          </template>
        </el-table-column>
@@ -130,15 +130,15 @@
        <el-form ref="form" :model="form" :rules="rules" label-width="80px">
          <el-row>
            <el-col :span="12">
-             <el-form-item label="信息标题" prop="informationTitle">
-               <el-input v-model="form.informationTitle" placeholder="请输入信息标题" />
+             <el-form-item label="信息标题" prop="infoTitle">
+               <el-input v-model="form.infoTitle" placeholder="请输入信息标题" />
              </el-form-item>
            </el-col>
            <el-col :span="12">
-             <el-form-item label="信息类型" prop="informationType">
-               <el-select v-model="form.informationType" placeholder="请选择">
+             <el-form-item label="信息类型" prop="infoType">
+               <el-select v-model="form.infoType" placeholder="请选择">
                  <el-option
-                   v-for="dict in dict.type.village_information_type"
+                   v-for="dict in dict.type.sys_notice_type"
                    :key="dict.value"
                    :label="dict.label"
                    :value="dict.value"
@@ -150,7 +150,7 @@
              <el-form-item label="状态">
                <el-radio-group v-model="form.status">
                  <el-radio
-                   v-for="dict in dict.type.village_information_status"
+                   v-for="dict in dict.type.sys_notice_status"
                    :key="dict.value"
                    :label="dict.value"
                  >{{dict.label}}</el-radio>
@@ -159,7 +159,7 @@
            </el-col>
            <el-col :span="24">
              <el-form-item label="内容">
-               <editor v-model="form.informationContent" :min-height="192"/>
+               <editor v-model="form.infoContent" :min-height="192"/>
              </el-form-item>
            </el-col>
          </el-row>
@@ -173,11 +173,11 @@
  </template>
 
  <script>
- import { listInformation, getInformation, delInformation, addInformation, updateInformation } from "@/api/village/information";
+ import { listInfo, getInfo, delInfo, addInfo, updateInfo } from "@/api/village/info";
 
  export default {
-   name: "Information",
-   dicts: ['village_information_status', 'village_information_type'],
+   name: "Info",
+   dicts: ['sys_notice_status', 'sys_notice_type'],
    data() {
      return {
        // 遮罩层
@@ -193,7 +193,7 @@
        // 总条数
        total: 0,
        // 信息表格数据
-       informationList: [],
+       infoList: [],
        // 弹出层标题
        title: "",
        // 是否显示弹出层
@@ -202,7 +202,7 @@
        queryParams: {
          pageNum: 1,
          pageSize: 10,
-         informationTitle: undefined,
+         infoTitle: undefined,
          createBy: undefined,
          status: undefined
        },
@@ -210,10 +210,10 @@
        form: {},
        // 表单校验
        rules: {
-         informationTitle: [
+         infoTitle: [
            { required: true, message: "信息标题不能为空", trigger: "blur" }
          ],
-         informationType: [
+         infoType: [
            { required: true, message: "信息类型不能为空", trigger: "change" }
          ]
        }
@@ -226,8 +226,8 @@
      /** 查询信息列表 */
      getList() {
        this.loading = true;
-       listInformation(this.queryParams).then(response => {
-         this.informationList = response.rows;
+       listInfo(this.queryParams).then(response => {
+         this.infoList = response.rows;
          this.total = response.total;
          this.loading = false;
        });
@@ -240,10 +240,10 @@
      // 表单重置
      reset() {
        this.form = {
-         informationId: undefined,
-         informationTitle: undefined,
-         informationType: undefined,
-         informationContent: undefined,
+         infoId: undefined,
+         infoTitle: undefined,
+         infoType: undefined,
+         infoContent: undefined,
          visitorVolume: undefined,
          status: "0"
        };
@@ -261,7 +261,7 @@
      },
      // 多选框选中数据
      handleSelectionChange(selection) {
-       this.ids = selection.map(item => item.informationId)
+       this.ids = selection.map(item => item.infoId)
        this.single = selection.length!=1
        this.multiple = !selection.length
      },
@@ -274,8 +274,8 @@
      /** 修改按钮操作 */
      handleUpdate(row) {
        this.reset();
-       const informationId = row.informationId || this.ids
-       getInformation(informationId).then(response => {
+       const infoId = row.infoId || this.ids
+       getInfo(infoId).then(response => {
          this.form = response.data;
          this.open = true;
          this.title = "修改信息";
@@ -285,14 +285,14 @@
      submitForm: function() {
        this.$refs["form"].validate(valid => {
          if (valid) {
-           if (this.form.informationId != undefined) {
-             updateInformation(this.form).then(response => {
+           if (this.form.infoId != undefined) {
+             updateInfo(this.form).then(response => {
                this.$modal.msgSuccess("修改成功");
                this.open = false;
                this.getList();
              });
            } else {
-             addInformation(this.form).then(response => {
+             addInfo(this.form).then(response => {
                this.$modal.msgSuccess("新增成功");
                this.open = false;
                this.getList();
@@ -303,9 +303,9 @@
      },
      /** 删除按钮操作 */
      handleDelete(row) {
-       const informationIds = row.informationId || this.ids
-       this.$modal.confirm('是否确认删除信息编号为"' + informationIds + '"的数据项？').then(function() {
-         return delInformation(informationIds);
+       const infoIds = row.infoId || this.ids
+       this.$modal.confirm('是否确认删除信息编号为"' + infoIds + '"的数据项？').then(function() {
+         return delInfo(infoIds);
        }).then(() => {
          this.getList();
          this.$modal.msgSuccess("删除成功");

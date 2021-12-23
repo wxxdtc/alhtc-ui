@@ -1,44 +1,44 @@
 import request from '@/utils/request'
 
  // 查询信息列表
- export function listInformation(query) {
+ export function listInfo(query) {
    return request({
-     url: '/village/information/list',
+     url: '/village/info/list',
      method: 'get',
      params: query
    })
  }
 
  // 查询信息详细
- export function getInformation(informationId) {
+ export function getInfo(infoId) {
    return request({
-     url: '/village/information/' + informationId,
+     url: '/village/info/' + infoId,
      method: 'get'
    })
  }
 
  // 新增信息
- export function addInformation(data) {
+ export function addInfo(data) {
    return request({
-     url: '/village/information',
+     url: '/village/info',
      method: 'post',
      data: data
    })
  }
 
  // 修改信息
- export function updateInformation(data) {
+ export function updateInfo(data) {
    return request({
-     url: '/village/information',
+     url: '/village/info',
      method: 'put',
      data: data
    })
  }
 
  // 删除信息
- export function delInformation(informationId) {
+ export function delInfo(infoId) {
    return request({
-     url: '/village/information/' + informationId,
+     url: '/village/info/' + infoId,
      method: 'delete'
    })
  } 
